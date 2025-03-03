@@ -53,11 +53,11 @@ const AddProduct: React.FC = () => {
         <input name="stocks" placeholder="Stocks" onChange={handleChange} className="block w-full p-2 border rounded mb-4" />
         
         {/* Dropdown for selecting warehouse */}
-        <select name="warehouse" onChange={handleChange} className="block w-full p-2 border rounded mb-4">
+        {/* <select name="warehouse" onChange={handleChange} className="block w-full p-2 border rounded mb-4">
           <option value="">Select Warehouse</option>
           <option value="65abc1234def56789ghi1011">Warehouse 1</option>
           <option value="65abc9876def54321ghi2022">Warehouse 2</option>
-        </select>
+        </select> */}
 
         <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded-md">
           Add Product

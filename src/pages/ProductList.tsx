@@ -1,20 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, Filter, Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { products } from '../data';
+// import { products } from '../data';
 import ProductCard from '../components/ProductCard';
+import { getProducts } from "../api/product";
 
 const ProductList: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
+  const [products, setProducts] = useState([]);
   const navigate = useNavigate();
 
   // Get unique categories
-  const categories = Array.from(new Set(products.map(product => product.category)));
+  // const categories = Array.from(new Set(products.map(product => product.category)));
 
   // Get unique statuses
-  const statuses = Array.from(new Set(products.map(product => product.status)));
+  // const statuses = Array.from(new Set(products.map(product => product.status)));
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+        try {
+            const data = await getProducts();
+            setProducts(data);
+        } catch (error) {
+            console.error("Error fetching products:", error);
+        }
+    };
+
+    fetchProducts();
+}, []);
 
   // Filter products based on search term and filters
   const filteredProducts = products.filter(product => {

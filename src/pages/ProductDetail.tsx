@@ -9,7 +9,7 @@ import { getProductById } from '../api/product';
 
 const ProductDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const [product, setProduct] = useState<any>(null);
+  const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   
   // Get product details
@@ -26,6 +26,7 @@ const ProductDetail: React.FC = () => {
       try {
         if (id) {
           const data = await getProductById(id);
+          console.log("Fetched product:", data);
           setProduct(data);
         }
       } catch (error) {
@@ -37,6 +38,7 @@ const ProductDetail: React.FC = () => {
 
     fetchProduct();
   }, [id]);
+
   if (loading) return <p>Loading...</p>;
 
   if (!product) {
@@ -54,20 +56,20 @@ const ProductDetail: React.FC = () => {
     );
   }
   
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'In Stock':
-        return 'bg-green-100 text-green-800';
-      case 'In Transit':
-        return 'bg-blue-100 text-blue-800';
-      case 'Delivered':
-        return 'bg-purple-100 text-purple-800';
-      case 'Sold':
-        return 'bg-gray-100 text-gray-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
-  };
+  // const getStatusColor = (status: string) => {
+  //   switch (status) {
+  //     case 'In Stock':
+  //       return 'bg-green-100 text-green-800';
+  //     case 'In Transit':
+  //       return 'bg-blue-100 text-blue-800';
+  //     case 'Delivered':
+  //       return 'bg-purple-100 text-purple-800';
+  //     case 'Sold':
+  //       return 'bg-gray-100 text-gray-800';
+  //     default:
+  //       return 'bg-gray-100 text-gray-800';
+  //   }
+  // };
   
   return (
     <div className="container mx-auto px-4 py-8">
