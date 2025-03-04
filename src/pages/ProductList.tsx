@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Filter, Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-// import { products } from '../data';
 import ProductCard from '../components/ProductCard';
 import { getProducts } from "../api/product";
+import { Product } from '../types';
 
 const ProductList: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const navigate = useNavigate();
 
   // Get unique categories
@@ -22,6 +22,7 @@ const ProductList: React.FC = () => {
     const fetchProducts = async () => {
         try {
             const data = await getProducts();
+            console.log("API response:", data); // Check the response structure
             setProducts(data);
         } catch (error) {
             console.error("Error fetching products:", error);
@@ -30,6 +31,10 @@ const ProductList: React.FC = () => {
 
     fetchProducts();
 }, []);
+
+  // Get unique categories and statuses for filtering
+  const categories = Array.from(new Set(products.map((product) => product.category)));
+  const statuses = Array.from(new Set(products.map((product) => product.status)));
 
   // Filter products based on search term and filters
   const filteredProducts = products.filter(product => {
@@ -110,7 +115,7 @@ const ProductList: React.FC = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {filteredProducts.length > 0 ? (
           filteredProducts.map(product => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard key={product._id} product={product} />
           ))
         ) : (
           <div className="col-span-full text-center py-12">

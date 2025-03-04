@@ -202,7 +202,7 @@ export const stockLevels: StockLevel[] = [
 
 // Function to find a product by ID (requires `products` to be passed)
 export const getProductById = (id: string, products: Product[]): Product | undefined => {
-  return products.find(product => product.id === id);
+  return products.find(product => product._id === id);
 };
 
 export const getProductEvents = (productId: string): TrackingEvent[] => {

@@ -1,13 +1,13 @@
 export interface Product {
-  id: string;
+  _id: string;
   name: string;
+  description: string;
   sku: string;
   category: string;
   price: number;
   batchNumber: string;
-  expiryDate: string;
-  currentLocation: string;
-  status: 'In Stock' | 'In Transit' | 'Delivered' | 'Sold';
+  stocks: number;
+  status: string;
 }
 
 export interface TrackingEvent {

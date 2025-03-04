@@ -6,11 +6,15 @@ import TrackingTimeline from '../components/TrackingTimeline';
 import QRCodeGenerator from '../components/QRCodeGenerator';
 import StockLevelIndicator from '../components/StockLevelIndicator';
 import { getProductById } from '../api/product';
+import { Product } from '../types';
 
 const ProductDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const [product, setProduct] = useState(null);
+  // const [product, setProduct] = useState(null);
+  // const [loading, setLoading] = useState(true);
+  const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   
   // Get product details
   // const product = id ? getProductById(id) : undefined;
@@ -21,16 +25,40 @@ const ProductDetail: React.FC = () => {
   // Get stock levels for this product
   // const stockLevels = id ? getProductStockLevels(id) : [];
   
+  // useEffect(() => {
+  //   const fetchProduct = async () => {
+  //     try {
+  //       if (id) {
+  //         const data = await getProductById(id);
+  //         console.log("Fetched product:", data);
+  //         setProduct(data);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching product:", error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   fetchProduct();
+  // }, [id]);
+
   useEffect(() => {
     const fetchProduct = async () => {
+      if (!id) {
+        setLoading(false);
+        return;
+      }
+      
       try {
-        if (id) {
-          const data = await getProductById(id);
-          console.log("Fetched product:", data);
-          setProduct(data);
-        }
-      } catch (error) {
-        console.error("Error fetching product:", error);
+        setLoading(true);
+        const data = await getProductById(id);
+        console.log("Fetched product:", data);
+        setProduct(data);
+        setError(null);
+      } catch (err) {
+        console.error("Error fetching product:", err);
+        setError("Failed to load product details. Please try again later.");
       } finally {
         setLoading(false);
       }
