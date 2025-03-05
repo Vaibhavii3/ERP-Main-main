@@ -7,6 +7,7 @@ export interface Product {
   price: number;
   stocks: number;
   status: string;
+  warehouse: Warehouse;
 }
 
 export interface TrackingEvent {

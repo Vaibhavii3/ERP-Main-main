@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { addProduct } from "../api/product";
+import { listWarehouses } from "../api/warehouse";
 
 
 const AddProduct: React.FC = () => {
@@ -15,13 +16,23 @@ const AddProduct: React.FC = () => {
   });
 
   const [loading, setLoading] = useState(false);
-  // const [error, setError] = useState<string | null>(null);
+  const [warehouses, setWarehouses] = useState<{ _id: string; name: string }[]>([]);
+  const [selectedWarehouse, setSelectedWarehouse] = useState("");
+
+  useEffect(() => {
+    const fetchWarehouses = async () => {
+      try {
+        const response = await listWarehouses();
+        setWarehouses(response.warehouses); // Adjust based on API response structure
+      } catch (error) {
+        console.error("Error fetching warehouses:", error);
+      }
+    };
+
+    fetchWarehouses();
+  }, []);
 
   const navigate = useNavigate();
-
-  // const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-  //   setNewProduct({ ...newProduct, [e.target.name]: e.target.value });
-  // };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -33,17 +44,6 @@ const AddProduct: React.FC = () => {
       setNewProduct({ ...newProduct, [name]: value });
     }
   };
-
-  // const handleSubmit = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   try {
-  //     await addProduct(newProduct);
-  //     console.log("Product added:", newProduct);
-  //     navigate("/");
-  //   } catch (error) {
-  //     console.error("Error adding product:", error);
-  //   }
-  // };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -74,15 +74,25 @@ const AddProduct: React.FC = () => {
         <input name="stocks" placeholder="Stocks" onChange={handleChange} className="block w-full p-2 border rounded mb-4" />
         
         {/* Dropdown for selecting warehouse */}
-        {/* <select name="warehouse" onChange={handleChange} className="block w-full p-2 border rounded mb-4">
-          <option value="">Select Warehouse</option>
-          <option value="65abc1234def56789ghi1011">Warehouse 1</option>
-          <option value="65abc9876def54321ghi2022">Warehouse 2</option>
-        </select> */}
+        <select 
+          name="warehouse" 
+          // onChange={handleChange}
+          onChange={(e) => {
+            setSelectedWarehouse(e.target.value); // Update selectedWarehouse state
+            setNewProduct({ ...newProduct, warehouse: e.target.value }); // Update newProduct
+          }}
+          value={selectedWarehouse} 
+          className="block w-full p-2 border rounded mb-4">
+        <option value="" disabled>
+          Select a Warehouse
+        </option>
+        {warehouses.map((warehouse) => (
+          <option key={warehouse._id} value={warehouse._id}>
+          {warehouse.name}
+        </option>
+        ))}
+        </select>
 
-        {/* <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded-md">
-          Add Product
-        </button> */}
         <div className="mt-4 flex justify-end">
           <button 
             type="button" 

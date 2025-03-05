@@ -1,8 +1,7 @@
 import React, { useState, useEffect} from 'react';
 import { useParams, Link } from 'react-router-dom';
 // import { ArrowLeft, Package, Calendar, MapPin, Tag, Printer, Download } from 'lucide-react';
-import { ArrowLeft, Tag, Printer, Download } from 'lucide-react';
-// import { getProductById, getProductEvents, getProductStockLevels, getWarehouseById } from '../data';
+import { ArrowLeft, Tag, Printer, Download, MapPin } from 'lucide-react';
 // import TrackingTimeline from '../components/TrackingTimeline';
 import QRCodeGenerator from '../components/QRCodeGenerator';
 // import StockLevelIndicator from '../components/StockLevelIndicator';
@@ -136,27 +135,27 @@ const ProductDetail: React.FC = () => {
                 </div>
               )}
 
-                {/* <div>
-                  <p className="text-sm text-gray-500">Batch Number</p>
-                  <p className="font-medium flex items-center">
-                    <Package className="h-4 w-4 mr-1 text-gray-400" />
-                    {product.batchNumber}
-                  </p>
-                </div> */}
                 <div>
-                  {/* <p className="text-sm text-gray-500">Expiry Date</p> */}
-                  {/* <p className="font-medium flex items-center">
+                  <p className="text-sm text-gray-500">Warehouse</p>
+                  <p className="font-medium flex items-center">
+                    <MapPin className="h-4 w-4 mr-1 text-gray-400" />
+                    {product.warehouse?.name}
+                  </p>
+                </div>
+                {/* <div>
+                  <p className="text-sm text-gray-500">Expiry Date</p>
+                  <p className="font-medium flex items-center">
                     <Calendar className="h-4 w-4 mr-1 text-gray-400" />
                     {new Date(product.expiryDate).toLocaleDateString()}
-                  </p> */}
+                  </p>
                 </div>
                 <div>
-                  {/* <p className="text-sm text-gray-500">Current Location</p>
+                  <p className="text-sm text-gray-500">Current Location</p>
                   <p className="font-medium flex items-center">
                     <MapPin className="h-4 w-4 mr-1 text-gray-400" />
                     {product.currentLocation}
-                  </p> */}
-                </div>
+                  </p>
+                </div> */}
 
                 {product.price !== undefined && (
                   <div>

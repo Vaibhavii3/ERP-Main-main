@@ -127,12 +127,19 @@ const ProductList: React.FC = () => {
       </div>
       
       {/* Add Product Button */}
-      <div className="mb-6 flex justify-end">
+      <div className="mb-6 flex justify-end gap-3">
         <button 
           onClick={() => navigate('/add-product')}
           className="flex items-center bg-blue-600 text-white px-4 py-2 rounded-md shadow hover:bg-blue-700"
         >
           <Plus className="w-5 h-5 mr-2" /> Add Product
+        </button>
+
+        <button 
+          onClick={() => navigate('/add-warehouse')}
+          className="flex items-center bg-blue-600 text-white px-4 py-2 rounded-md shadow hover:bg-blue-700"
+        >
+          <Plus className="w-5 h-5 mr-2" /> Add Warehouse
         </button>
       </div>
       

@@ -8,6 +8,7 @@ import QRScanner from './pages/QRScanner';
 import TrackingPage from './pages/TrackingPage';
 import Analytics from './pages/Analytics';
 import AddProduct from './pages/Add-Product';
+import AddWarehouse from './pages/Add-Warehouse';
 
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
             <Route path="/" element={<Dashboard />} />
             <Route path="/products" element={<ProductList />} />
             <Route path="/add-product" element={<AddProduct />} />
+            <Route path="/add-warehouse" element={<AddWarehouse />} />
             <Route path="/products/:id" element={<ProductDetail />} />
             <Route path="/qr-scanner" element={<QRScanner />} />
             <Route path="/tracking" element={<TrackingPage />} />

@@ -1,17 +1,17 @@
 import axios from 'axios';
 
-const API_BASE_URL = "http://localhost:5000/api/v1/warehouse"; 
+const API_BASE_URL = "http://localhost:3000/api/v1/warehouse"; 
 
 // Create a new warehouse
 export const addWarehouse = async (data: object) => {
   const response = await axios.post(`${API_BASE_URL}/warehouse`, data);
-  return response.data;
+  return response.data.data;
 };
 
 // Update a warehouse by ID
 export const updateWarehouse = async (id: string, data: object) => {
   const response = await axios.put(`${API_BASE_URL}/warehouse/${id}`, data);
-  return response.data;
+  return response.data.data;
 };
 
 // Delete a warehouse by ID
