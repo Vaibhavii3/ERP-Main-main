@@ -18,21 +18,27 @@ const AddWarehouse = () => {
   useEffect(() => {
     const fetchManagers = async () => {
       try {
-        const response = await listManagers();//
-        setManagers(response.users); // Adjust based on API response structure
+        const response = await listManagers();
+        console.log("Fetched Managers:", response); // Debugging
+  
+        if (response && response.success && Array.isArray(response.users)) {
+          setManagers(response.users); // Ensure it is an array
+        } else {
+          console.error("Invalid API Response:", response);
+        }
       } catch (error) {
-        console.error("Error fetching users:", error);
+        console.error("Error fetching managers:", error);
       }
     };
     fetchManagers();
   }, []);
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setNewWarehouse({ ...newWarehouse, [name]: value });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     try {
@@ -41,7 +47,7 @@ const AddWarehouse = () => {
         zones: newWarehouse.zones.split(",").map((zone) => zone.trim()), // Convert zones to an array
       });
       console.log("Warehouse added:", addedWarehouse);
-      navigate("/warehouses");
+      navigate("/products");
     } catch (error) {
       console.error("Error adding warehouse:", error);
     } finally {
@@ -67,7 +73,7 @@ const AddWarehouse = () => {
         <input name="zones" placeholder="Zones (comma-separated)" onChange={handleChange} className="block w-full p-2 border rounded mb-4" required />
         
         <div className="mt-4 flex justify-end">
-          <button type="button" onClick={() => navigate('/warehouses')} className="bg-gray-200 text-gray-700 px-4 py-2 rounded-md mr-2">
+          <button type="button" onClick={() => navigate('/products')} className="bg-gray-200 text-gray-700 px-4 py-2 rounded-md mr-2">
             Cancel
           </button>
           <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded-md" disabled={loading}>
