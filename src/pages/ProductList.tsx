@@ -1,36 +1,53 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect} from 'react';
 import { Search, Filter, Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
-import { getProducts } from "../api/product";
+import { getProducts, deleteProduct } from "../api/product";
 import { Product } from '../types';
 
 const ProductList: React.FC = () => {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
-  const [products, setProducts] = useState<Product[]>([]);
   const navigate = useNavigate();
 
-  // Get unique categories
-  // const categories = Array.from(new Set(products.map(product => product.category)));
-
-  // Get unique statuses
-  // const statuses = Array.from(new Set(products.map(product => product.status)));
-
-  useEffect(() => {
     const fetchProducts = async () => {
-        try {
-            const data = await getProducts();
-            console.log("API response:", data); // Check the response structure
-            setProducts(data);
-        } catch (error) {
-            console.error("Error fetching products:", error);
+      try {
+        setLoading(true);
+        const data = await getProducts();
+        console.log("Fetched data:", data); // Debugging
+        if (data && Array.isArray(data)) {
+          setProducts(data);
+        } else {
+          console.error("Unexpected response format:", data);
+          setProducts([]); // Set to empty array to prevent errors
         }
+      } catch (err) {
+        console.error("Error fetching products:", err);
+        setProducts([]); // Fallback to empty array
+      } finally {
+        setLoading(false);
+      }
     };
 
-    fetchProducts();
-}, []);
+    useEffect(() => {
+      fetchProducts();
+    }, []);
+    
+
+    const handleDelete = async (id: string) => {
+      if (window.confirm('Are you sure you want to delete this product?')) {
+        try {
+          await deleteProduct(id);
+          setProducts(products.filter(p => p._id !== id));
+        } catch (err) {
+          console.error("Error deleting product:", err);
+          alert("Failed to delete product");
+        }
+      }
+    };
 
   // Get unique categories and statuses for filtering
   const categories = Array.from(new Set(products.map((product) => product.category)));
@@ -45,6 +62,14 @@ const ProductList: React.FC = () => {
     
     return matchesSearch && matchesCategory && matchesStatus;
   });
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -115,7 +140,7 @@ const ProductList: React.FC = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {filteredProducts.length > 0 ? (
           filteredProducts.map(product => (
-            <ProductCard key={product._id} product={product} />
+            <ProductCard key={product._id} product={product} onDelete={handleDelete} />
           ))
         ) : (
           <div className="col-span-full text-center py-12">

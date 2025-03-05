@@ -5,7 +5,6 @@ export interface Product {
   sku: string;
   category: string;
   price: number;
-  batchNumber: string;
   stocks: number;
   status: string;
 }

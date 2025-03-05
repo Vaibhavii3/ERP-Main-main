@@ -15,21 +15,19 @@ function App() {
     <Router>
       <div className="min-h-screen bg-gray-100">
         <Navbar />
+
         <main>
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/products" element={<ProductList />} />
             <Route path="/add-product" element={<AddProduct />} />
-            <Route path="/product/:id" element={<ProductDetail />} />
+            <Route path="/products/:id" element={<ProductDetail />} />
             <Route path="/qr-scanner" element={<QRScanner />} />
             <Route path="/tracking" element={<TrackingPage />} />
             <Route path="/analytics" element={<Analytics />} />
-            <Route path="/add-product" element={<AddProduct/>} />
-
-            {/* add-product */}
-
           </Routes>
         </main>
+        
       </div>
     </Router>
   );

@@ -1,58 +1,33 @@
 import React, { useState, useEffect} from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Package, Calendar, MapPin, Tag, Printer, Download } from 'lucide-react';
+// import { ArrowLeft, Package, Calendar, MapPin, Tag, Printer, Download } from 'lucide-react';
+import { ArrowLeft, Tag, Printer, Download } from 'lucide-react';
 // import { getProductById, getProductEvents, getProductStockLevels, getWarehouseById } from '../data';
-import TrackingTimeline from '../components/TrackingTimeline';
+// import TrackingTimeline from '../components/TrackingTimeline';
 import QRCodeGenerator from '../components/QRCodeGenerator';
-import StockLevelIndicator from '../components/StockLevelIndicator';
+// import StockLevelIndicator from '../components/StockLevelIndicator';
 import { getProductById } from '../api/product';
 import { Product } from '../types';
 
 const ProductDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  // const [product, setProduct] = useState(null);
-  // const [loading, setLoading] = useState(true);
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
-  // Get product details
-  // const product = id ? getProductById(id) : undefined;
-  
-  // Get tracking events for this product
-  // const events = id ? getProductEvents(id) : [];
-  
-  // Get stock levels for this product
-  // const stockLevels = id ? getProductStockLevels(id) : [];
-  
-  // useEffect(() => {
-  //   const fetchProduct = async () => {
-  //     try {
-  //       if (id) {
-  //         const data = await getProductById(id);
-  //         console.log("Fetched product:", data);
-  //         setProduct(data);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching product:", error);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   fetchProduct();
-  // }, [id]);
 
   useEffect(() => {
+    if (!id) {
+      setError("Invalid product ID.")
+      setLoading(false);
+      return;
+    }
+    
     const fetchProduct = async () => {
-      if (!id) {
-        setLoading(false);
-        return;
-      }
-      
       try {
-        setLoading(true);
+
         const data = await getProductById(id);
+        if (!data) throw new Error("Invalid product data received.");
+  
         console.log("Fetched product:", data);
         setProduct(data);
         setError(null);
@@ -63,9 +38,10 @@ const ProductDetail: React.FC = () => {
         setLoading(false);
       }
     };
-
+  
     fetchProduct();
   }, [id]);
+  
 
   if (loading) return <p>Loading...</p>;
 
@@ -83,21 +59,36 @@ const ProductDetail: React.FC = () => {
       </div>
     );
   }
+
+  if (error || !product) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="bg-white rounded-lg shadow p-8 text-center">
+          <h1 className="text-2xl font-bold text-gray-800 mb-4">Product Not Found</h1>
+          <p className="text-gray-600 mb-6">{error}</p>
+          <Link to="/products" className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700">
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Products
+          </Link>
+        </div>
+      </div>
+    );
+  }
   
-  // const getStatusColor = (status: string) => {
-  //   switch (status) {
-  //     case 'In Stock':
-  //       return 'bg-green-100 text-green-800';
-  //     case 'In Transit':
-  //       return 'bg-blue-100 text-blue-800';
-  //     case 'Delivered':
-  //       return 'bg-purple-100 text-purple-800';
-  //     case 'Sold':
-  //       return 'bg-gray-100 text-gray-800';
-  //     default:
-  //       return 'bg-gray-100 text-gray-800';
-  //   }
-  // };
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'In Stock':
+        return 'bg-green-100 text-green-800';
+      case 'In Transit':
+        return 'bg-blue-100 text-blue-800';
+      case 'Delivered':
+        return 'bg-purple-100 text-purple-800';
+      case 'Sold':
+        return 'bg-gray-100 text-gray-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
   
   return (
     <div className="container mx-auto px-4 py-8">
@@ -116,12 +107,19 @@ const ProductDetail: React.FC = () => {
               {product.status}
             </span>
           </div>
+
+          <div className="flex justify-between items-center">
+            <h1 className="text-xl font-bold">
+              {product.description}
+            </h1>
+          </div>
         </div>
         
         <div className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="md:col-span-2">
               <div className="grid grid-cols-2 gap-4 mb-6">
+              {product.sku && (
                 <div>
                   <p className="text-sm text-gray-500">SKU</p>
                   <p className="font-medium flex items-center">
@@ -129,38 +127,47 @@ const ProductDetail: React.FC = () => {
                     {product.sku}
                   </p>
                 </div>
+              )}
+
+              {product.category && (
                 <div>
                   <p className="text-sm text-gray-500">Category</p>
                   <p className="font-medium">{product.category}</p>
                 </div>
-                <div>
+              )}
+
+                {/* <div>
                   <p className="text-sm text-gray-500">Batch Number</p>
                   <p className="font-medium flex items-center">
                     <Package className="h-4 w-4 mr-1 text-gray-400" />
                     {product.batchNumber}
                   </p>
-                </div>
+                </div> */}
                 <div>
-                  <p className="text-sm text-gray-500">Expiry Date</p>
-                  <p className="font-medium flex items-center">
+                  {/* <p className="text-sm text-gray-500">Expiry Date</p> */}
+                  {/* <p className="font-medium flex items-center">
                     <Calendar className="h-4 w-4 mr-1 text-gray-400" />
                     {new Date(product.expiryDate).toLocaleDateString()}
-                  </p>
+                  </p> */}
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Current Location</p>
+                  {/* <p className="text-sm text-gray-500">Current Location</p>
                   <p className="font-medium flex items-center">
                     <MapPin className="h-4 w-4 mr-1 text-gray-400" />
                     {product.currentLocation}
-                  </p>
+                  </p> */}
                 </div>
-                <div>
+
+                {product.price !== undefined && (
+                  <div>
                   <p className="text-sm text-gray-500">Price</p>
                   <p className="font-medium text-indigo-600">${product.price.toFixed(2)}</p>
                 </div>
+                )}
+
               </div>
               
-              <div className="mb-6">
+              {/* <div className="mb-6">
                 <h2 className="text-lg font-semibold text-gray-800 mb-4">Stock Levels</h2>
                 {stockLevels.length > 0 ? (
                   <div>
@@ -178,7 +185,7 @@ const ProductDetail: React.FC = () => {
                 ) : (
                   <p className="text-gray-500">No stock information available</p>
                 )}
-              </div>
+              </div> */}
             </div>
             
             <div className="flex flex-col items-center justify-center border-l pl-6">
@@ -203,13 +210,13 @@ const ProductDetail: React.FC = () => {
         <div className="px-6 py-4 bg-indigo-700 text-white">
           <h2 className="text-lg font-semibold">Product Journey</h2>
         </div>
-        <div className="p-6">
+        {/* <div className="p-6">
           {events.length > 0 ? (
             <TrackingTimeline events={events} />
           ) : (
             <p className="text-gray-500">No tracking events available for this product.</p>
           )}
-        </div>
+        </div> */}
       </div>
     </div>
   );

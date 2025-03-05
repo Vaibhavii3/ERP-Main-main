@@ -53,7 +53,7 @@ const AddProduct: React.FC = () => {
     try {
       const addedProduct = await addProduct(newProduct);
       console.log("Product added:", addedProduct);
-      navigate(`/product/${addedProduct._id}`);
+      navigate(`/products/${addedProduct._id}`);
     } catch (error) {
       console.error("Error adding product:", error);
       // setError("Failed to add product. Please try again.");
