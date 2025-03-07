@@ -1,12 +1,13 @@
 import axios from 'axios';
+import { API_BASE_URL } from '../config';
 
-const API_BASE_URL = "http://localhost:3000/api/v1/auth"; 
+const USER_URL = `${API_BASE_URL}/api/v1/auth`; 
 
 // Fetch only warehouse managers
 export const listManagers = async () => {
     try {
       const token = localStorage.getItem("token"); // If using authentication
-      const response = await axios.get(`${API_BASE_URL}/managers`, {
+      const response = await axios.get(`${USER_URL}/managers`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       return response.data;
